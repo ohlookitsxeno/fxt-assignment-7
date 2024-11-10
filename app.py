@@ -198,7 +198,7 @@ def hypothesis_test():
     plt.hist(simulated_stats, bins=20, alpha=0.7, color='skyblue', edgecolor='black', label="Simulated Statistics")
     plt.axvline(observed_stat, color='red', linestyle='--', linewidth=2, label=f"Observed {parameter}: {observed_stat:.4f}")
     plt.axvline(hypothesized_value, color='blue', linestyle='-', linewidth=2, label=f"Hypothesized {parameter} (H₀): {hypothesized_value}")
-    plt.title(f'Hypothesis Test for {parameter}. p-value:{p_value:.4f}')
+    plt.title(f'Hypothesis Test for {parameter}')
     plt.xlabel(parameter)
     plt.ylabel("Frequency")
     plt.legend()
@@ -220,8 +220,8 @@ def hypothesis_test():
         beta1=beta1,
         S=S,
         # TODO 13: Uncomment the following lines when implemented
-        # p_value=p_value,
-        # fun_message=fun_message,
+        p_value=p_value,
+        fun_message=fun_message,
     )
 
 @app.route("/confidence_interval", methods=["POST"])
@@ -277,16 +277,16 @@ def confidence_interval():
     
     # Plot mean estimate as a colored point (green if includes true parameter, red otherwise)
     mean_color = 'green' if includes_true else 'red'
-    plt.scatter([mean_estimate], [0], color=mean_color, s=100, label=f"Mean Estimate: {mean_estimate:.4f}")
+    plt.scatter([mean_estimate], [0], color='blue', s=100, label=f"Mean Estimate")
     
     # Plot the confidence interval as a horizontal line
-    plt.hlines(0, ci_lower, ci_upper, colors=mean_color, linestyles="dashed", linewidth=2, label=f"{confidence_level*100}% CI")
+    plt.hlines(0, ci_lower, ci_upper, colors='blue', linestyles="-", linewidth=4, label=f"{confidence_level}% Confidence Interval")
 
     
     # Plot the true parameter value as a vertical line
-    plt.axvline(true_param, color='blue', linestyle='-', linewidth=2, label=f"True Parameter: {true_param}")
+    plt.axvline(true_param, color=mean_color, linestyle='--', linewidth=2, label=f"True {parameter}")
 
-    plt.title(f'Confidence Interval for {parameter} at {confidence_level * 100}%')
+    plt.title(f'{confidence_level}% Confidence Interval for {parameter} (Mean Estimate)')
     plt.xlabel("Estimate Values")
     plt.legend()
     plot4_path = "static/plot4.png"
