@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, url_for, session
 import numpy as np
 import matplotlib
 
+from scipy import stats
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
@@ -244,7 +245,7 @@ def confidence_interval():
     confidence_level = float(request.form.get("confidence_level"))
 
     # Use the slopes or intercepts from the simulations
-    if parameter == "slope":
+    if parameter == "Slope":
         estimates = np.array(slopes)
         observed_stat = slope
         true_param = beta1
@@ -257,11 +258,12 @@ def confidence_interval():
     mean_estimate = np.mean(estimates)
     std_estimate = np.std(estimates)
 
+    std_error = std_estimate / np.sqrt(len(estimates))
+
     # TODO 15: Calculate confidence interval for the parameter estimate
     # Use the t-distribution and confidence_level
-    z_scores = {90: 1.645, 95: 1.96, 99: 2.576}
-    z_score = z_scores.get(confidence_level)
-    margin_of_error = z_score * (std_estimate / np.sqrt(len(estimates)))
+    t_critical = stats.t.ppf(1 - (1 - confidence_level/100) / 2, df=len(estimates)-1)
+    margin_of_error = t_critical * std_error
     ci_lower = mean_estimate - margin_of_error
     ci_upper = mean_estimate + margin_of_error
 
